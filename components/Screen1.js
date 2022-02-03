@@ -31,7 +31,7 @@ export default class Start extends React.Component {
 
                 <ImageBackground source={BackgroundImage} resizeMode='cover' style={styles.backgroundImage}>
                     <View style={styles.titleBox}>
-                        <Text style={styles.title}>Chatopia</Text>
+                        <Text style={styles.title}>Chattopia</Text>
                     </View>
                     <View style={styles.box}>
                         <View style={styles.inputBox}>
