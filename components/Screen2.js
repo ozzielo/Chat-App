@@ -127,11 +127,7 @@ export default class Chat extends React.Component {
                 _id: data._id,
                 text: data.text,
                 createdAt: data.createdAt.toDate(),
-                user: {
-                    _id: data.user._id,
-                    name: data.user.name,
-                    avatar: data.user.avatar,
-                },
+                user: data.user
             });
         });
         this.setState({
@@ -153,11 +149,7 @@ export default class Chat extends React.Component {
                         renderBubble={this.renderBubble.bind(this)}
                         messages={this.state.messages}
                         onSend={messages => this.onSend(messages)}
-                        user={{
-                            _id: this.state.user._id,
-                            name: this.state.name,
-                            avatar: this.state.user.avatar,
-                        }}
+                        user={this.state.user}
                     />
                     {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null
                     }
