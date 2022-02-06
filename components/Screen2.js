@@ -70,6 +70,14 @@ export default class Chat extends React.Component {
                         }
                     });
                 });
+                const systemMsg = {
+                    _id: `sys-${Math.floor(Math.random() * 100000)}`,
+                    text: `${name} has entered Chatter`,
+                    createdAt: new Date(),
+                    system: true
+                }
+
+                this.referenceChatMessages.add(systemMsg)
 
                 this.saveMessages();
 
@@ -195,12 +203,14 @@ export default class Chat extends React.Component {
                 _id: data._id,
                 text: data.text,
                 createdAt: data.createdAt.toDate(),
-                user: data.user
+                user: data.user,
+                system: data.system
             });
         });
         this.setState({
             messages: messages,
         });
+        this.saveMessages()
     };
 
     render() {
