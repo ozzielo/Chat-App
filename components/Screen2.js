@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Text, Platform, KeyboardAvoidingView, StyleSheet } from 'react-native';
+import { View, Text, Platform, KeyboardAvoidingView, StyleSheet, Button } from 'react-native';
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
+import CustomActions from './CustomActions';
+import MapView from 'react-native-maps';
 
 
 const firebase = require('firebase');
@@ -29,6 +31,8 @@ export default class Chat extends React.Component {
                 _id: "",
                 name: "",
                 avatar: "",
+                image: null,
+                location: null
             },
             isConnected: false
         }
@@ -122,6 +126,8 @@ export default class Chat extends React.Component {
             text: message.text || '',
             createdAt: message.createdAt,
             user: this.state.user,
+            image: message.image || "",
+            location: message.location || null,
         });
     }
 
@@ -160,6 +166,11 @@ export default class Chat extends React.Component {
             );
         }
     }
+
+    //to access CustomActions
+    renderCustomActions = (props) => {
+        return <CustomActions {...props} />;
+    };
 
 
     async getMessages() {
@@ -204,7 +215,9 @@ export default class Chat extends React.Component {
                 text: data.text,
                 createdAt: data.createdAt.toDate(),
                 user: data.user,
-                system: data.system
+                system: data.system,
+                image: data.image || null,
+                location: data.location || null,
             });
         });
         this.setState({
@@ -212,6 +225,29 @@ export default class Chat extends React.Component {
         });
         this.saveMessages()
     };
+
+    renderCustomView(props) {
+        const { currentMessage } = props;
+        if (currentMessage.location) {
+            return (
+                <MapView
+                    style={{
+                        width: 150,
+                        height: 100,
+                        borderRadius: 13,
+                        margin: 3
+                    }}
+                    region={{
+                        latitude: currentMessage.location.latitude,
+                        longitude: currentMessage.location.longitude,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }}
+                />
+            );
+        }
+        return null;
+    }
 
     render() {
         // entered name state from Start screen gets displayed in status bar at the top of the app
@@ -229,10 +265,13 @@ export default class Chat extends React.Component {
                         messages={this.state.messages}
                         onSend={messages => this.onSend(messages)}
                         user={this.state.user}
+                        renderActions={this.renderCustomActions}
+                        renderCustomView={this.renderCustomView}
                     />
                     {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null
                     }
                 </View>
+
             </View>
 
         )
